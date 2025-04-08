@@ -8,6 +8,6 @@ const TestSchema = new Schema({
     password: { type: Schema.Types.String, required: true, unique: true },
 })
 
-const Test = mongoose.model('tests', TestSchema);
+const Test = mongoose.model('Test', TestSchema);
 
 module.exports = Test
