@@ -1,4 +1,4 @@
-const { response, Encoder } = require('../utils/base');
+const { response, Encoder, JWT } = require('../utils/base');
 const { alert, print } = require('../utils/base').Base();
 
 const User = require('../models/user_model');
@@ -49,10 +49,11 @@ const login = async (req, res, next) => {
             password: req.body.password,
         }
         const db_user = await User.findOne({ email: fields.email });
-        if (!db_user) return next(new Error('Crendential Error!'));
-        if (!compare(fields.password, db_user.password)) next(new Error('Crendential Error!'));
+        if (!db_user) return next(new Error('Credential Error!'));
+        if (!compare(fields.password, db_user.password)) return next(new Error('Credential Error!'));
         // generate token
-        response(res, 'Login Success!', db_user, 200);
+        const token = JWT.loginToken({ id: db_user._id.toString() })
+        response(res, 'Login Success!', { token: token }, 200);
         print("Login Success!")
     } catch (err) {
         next(new Error(err.message));

@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const response = (res, message = '', result = {}, status = 200) => {
     res.status(status).json({
@@ -26,7 +27,10 @@ const Encoder = {
     compare: (origin, hash) => bcrypt.compareSync(origin, hash),
 }
 
+const JWT = {
+    loginToken: (payload) => jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" })
+}
 
 module.exports = {
-    response, Base, Encoder
+    response, Base, Encoder, JWT
 }
