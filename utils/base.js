@@ -29,14 +29,12 @@ const Encoder = {
 
 const JWT = {
     loginToken: (payload) => jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: "1h" }),
-    // verify: (token) => jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-    //     if (err) {
-    //         return err
-    //     }
-    //     if (decoded) {
-    //         return decoded
-    //     }
-    // }),
+    verify: (token, next) => jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return next(new Error(err.message))
+        }
+        return decoded;
+    }),
 }
 
 module.exports = {

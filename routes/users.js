@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const UserController = require('../controllers/UserController')
-const { response } = require('../utils/base')
+const { response, JWT } = require('../utils/base')
 const jwt = require('jsonwebtoken')
 
 // middleware
@@ -20,6 +20,7 @@ router.use('/profile', (req, res, next) => {
     console.log(`profile pre middleware!! `);
     next();
 })
+
 const verifyToken = (req, res, next) => {
     const authToken = req.headers.authorization
     if (!authToken) {
@@ -28,13 +29,16 @@ const verifyToken = (req, res, next) => {
     console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
     token = authToken.split(" ")[1];
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-        if (err) {
-            return next(new Error(err.message))
-        }
-        req.userId = decoded.id
-        req.decoded = decoded
-    })
+    // jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    //     if (err) {
+    //         return next(new Error(err.message))
+    //     }
+    //     req.userId = decoded.id
+    //     req.decoded = decoded
+    // })
+
+    const decodedToken = JWT.verify(token, next);
+    if (decodedToken) req.userId = decodedToken.id
     next();
 }
 router.get('/profile', verifyToken, UserController.profile);
