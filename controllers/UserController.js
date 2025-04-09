@@ -67,7 +67,7 @@ const login = async (req, res, next) => {
 const profile = async (req, res, next) => {
     try {
         // const user = await User.findById(req.userId).select(['-password', '-_id', "-__v"]);
-        const user = await getUserCache(req.userId)
+        const user = await getUserCache(req.userId) // reduce db query!
         if (user) {
             const finalUser = user;
             delete finalUser.password;

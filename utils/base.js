@@ -38,6 +38,7 @@ const JWT = {
 const RDB = {
     set: async (key, value) => await redis_client.set(key, JSON.stringify(value)),
     get: async (key) => JSON.parse(await redis_client.get(key)),
+    clear: async (key) => await redis_client.flushall(key)
 }
 
 module.exports = {
