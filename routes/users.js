@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const UserController = require('../controllers/UserController')
-const { response, JWT } = require('../utils/base')
+const { response } = require('../utils/base')
+const verifyToken = require('../middlewares/verifyToken')
 
 // middleware
 router.use('/', (req, res, next) => {
@@ -20,18 +21,7 @@ router.use('/profile', (req, res, next) => {
     next();
 })
 
-const verifyToken = (req, res, next) => {
-    const authToken = req.headers.authorization
-    if (!authToken) {
-        return next(new Error('Token is required!'))
-    }
-    console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
-    token = authToken.split(" ")[1];
 
-    const decodedToken = JWT.verify(token, next);
-    if (decodedToken) req.userId = decodedToken.id
-    next();
-}
 router.get('/profile', verifyToken, UserController.profile);
 
 // error handle

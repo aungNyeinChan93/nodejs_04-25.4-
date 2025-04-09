@@ -1,6 +1,6 @@
 const { response, Encoder, JWT } = require('../utils/base');
 const { alert, print } = require('../utils/base').Base();
-
+const { getUserCache, setUserCache } = require('../utils/cache')
 const User = require('../models/user_model');
 const { encode, compare } = Encoder;
 
@@ -53,6 +53,10 @@ const login = async (req, res, next) => {
         if (!compare(fields.password, db_user.password)) return next(new Error('Credential Error!'));
         // generate token
         const token = JWT.loginToken({ id: db_user._id.toString() })
+
+        // setUserCache(db_user._id.toString(), db_user)
+        await setUserCache(db_user._id.toString(), JSON.stringify(db_user))
+
         response(res, 'Login Success!', { token: token }, 200);
         print("Login Success!")
     } catch (err) {
@@ -62,8 +66,13 @@ const login = async (req, res, next) => {
 
 const profile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId).select(['-password', '-_id', "-__v"]);
-        response(res, ' Profile ', user, 200)
+        // const user = await User.findById(req.userId).select(['-password', '-_id', "-__v"]);
+        const user = await getUserCache(req.userId)
+        if (user) {
+            const finalUser = user;
+            delete finalUser.password;
+            response(res, ' Profile ', finalUser, 200)
+        }
     } catch (error) {
         next(new Error(error.message))
     }
