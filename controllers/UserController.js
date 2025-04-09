@@ -38,7 +38,7 @@ const register = async (req, res, next) => {
 
     } catch (err) {
         console.error(err.message)
-        next(new Error(err.message))
+        next(new Error(err))
     }
 }
 
@@ -56,16 +56,16 @@ const login = async (req, res, next) => {
         response(res, 'Login Success!', { token: token }, 200);
         print("Login Success!")
     } catch (err) {
-        next(new Error(err.message));
+        next(new Error(err));
     }
 }
 
 const profile = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findById(req.userId).select(['-password', '-_id', "-__v"]);
         response(res, ' Profile ', user, 200)
     } catch (error) {
-        next(new Error(error))
+        next(new Error(error.message))
     }
 }
 

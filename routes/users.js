@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const UserController = require('../controllers/UserController')
 const { response, JWT } = require('../utils/base')
-const jwt = require('jsonwebtoken')
 
 // middleware
 router.use('/', (req, res, next) => {
@@ -28,14 +27,6 @@ const verifyToken = (req, res, next) => {
     }
     console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
     token = authToken.split(" ")[1];
-
-    // jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-    //     if (err) {
-    //         return next(new Error(err.message))
-    //     }
-    //     req.userId = decoded.id
-    //     req.decoded = decoded
-    // })
 
     const decodedToken = JWT.verify(token, next);
     if (decodedToken) req.userId = decodedToken.id
