@@ -60,6 +60,15 @@ const login = async (req, res, next) => {
     }
 }
 
+const profile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId);
+        response(res, ' Profile ', user, 200)
+    } catch (error) {
+        next(new Error(error))
+    }
+}
+
 module.exports = {
-    register, login
+    register, login, profile
 }

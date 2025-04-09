@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const UserController = require('../controllers/UserController')
 const { response } = require('../utils/base')
+const jwt = require('jsonwebtoken')
 
 // middleware
 router.use('/', (req, res, next) => {
@@ -13,6 +14,30 @@ router.post('/register', UserController.register);
 
 // login
 router.post('/login', UserController.login)
+
+// profile
+router.use('/profile', (req, res, next) => {
+    console.log(`profile pre middleware!! `);
+    next();
+})
+const verifyToken = (req, res, next) => {
+    const authToken = req.headers.authorization
+    if (!authToken) {
+        return next(new Error('Token is required!'))
+    }
+    console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
+    token = authToken.split(" ")[1];
+
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return next(new Error(err.message))
+        }
+        req.userId = decoded.id
+        req.decoded = decoded
+    })
+    next();
+}
+router.get('/profile', verifyToken, UserController.profile);
 
 // error handle
 router.use((err, req, res, next) => {
