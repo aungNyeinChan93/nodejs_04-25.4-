@@ -20,8 +20,6 @@ router.use('/profile', (req, res, next) => {
     console.log(`profile pre middleware!! `);
     next();
 })
-
-
 router.get('/profile', verifyToken, UserController.profile);
 
 // error handle

@@ -1,6 +1,5 @@
 const { JWT } = require("../utils/base")
 
-
 /**
  * Middleware to verify the presence and validity of a JSON Web Token (JWT) in the request headers.
  * Extracts the token from the `Authorization` header, decodes it,  and attaches the user ID to the request object.

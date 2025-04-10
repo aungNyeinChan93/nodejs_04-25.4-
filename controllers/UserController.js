@@ -48,9 +48,11 @@ const login = async (req, res, next) => {
             email: req.body.email,
             password: req.body.password,
         }
+
         const db_user = await User.findOne({ email: fields.email });
         if (!db_user) return next(new Error('Credential Error!'));
         if (!compare(fields.password, db_user.password)) return next(new Error('Credential Error!'));
+
         // generate token
         const token = JWT.loginToken({ id: db_user._id.toString() })
 
