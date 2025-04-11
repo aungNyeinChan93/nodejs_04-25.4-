@@ -9,31 +9,42 @@ const filePathGenerate = (fileName) => path.join(__dirname, "../public/images/",
 
 const singleImageUpload = async (req, res, next) => {
 
-    let fileName = generateFileName(req.files.image.name);
-    let filePath = filePathGenerate(fileName)
+    try {
 
-    await req.files.image.mv(filePath)
+        let fileName = generateFileName(req.files.image.name);
+        let filePath = filePathGenerate(fileName)
 
-    const imageLink = process.env.IMAGES_URL + fileName
+        await req.files.image.mv(filePath)
 
-    req.imageLink = imageLink;
+        const imageLink = process.env.IMAGES_URL + fileName
 
-    next()
+        req.imageLink = imageLink;
+
+        next()
+
+    } catch (error) {
+
+        next(new Error(error.message))
+
+    }
 }
 
 const multiFileUpload = async (req, res, next) => {
-    const files = req.files.images;
-    let imageLinks = []
-    files.forEach(file => {
-        let fileName = generateFileName(file.name);
-        let filePath = filePathGenerate(fileName)
-        file.mv(filePath)
-        imageLinks.push(process.env.IMAGES_URL + fileName)
-    });
-    req.imageLinks = imageLinks;
-    next();
+    try {
+        const files = req.files.images;
+        let imageLinks = [];
+        files.forEach(file => {
+            let fileName = generateFileName(file.name);
+            let filePath = filePathGenerate(fileName)
+            file.mv(filePath)
+            imageLinks.push(process.env.IMAGES_URL + fileName)
+        });
+        req.imageLinks = imageLinks;
+        next();
+    } catch (error) {
+        next(new Error(error))
+    }
 }
 
-// const deleteFileByName = async()
 
 module.exports = { singleImageUpload, multiFileUpload }

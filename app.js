@@ -6,8 +6,6 @@ const app = express();
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URL);
 
-const path = require('path')
-
 const fileUpload = require('express-fileupload')
 
 app.use(express.json())
@@ -25,17 +23,12 @@ app.listen(process.env.PORT, () => {
 const userRouter = require('./routes/users')
 app.use('/api/users', userRouter)
 
-// // upload image
-// app.post('/images', (req, res, next) => {
-//     let fileName = req.files.image.name;
-//     fileName = new Date().valueOf() + "_anc_" + fileName
-//     const filePath = path.join(__dirname, '/public/images/') + fileName
-//     req.files.image.mv(filePath, (err) => console.log(err));
-//     res.json({ con: 'success', result: fileName })
-// })
-
 // images
 const imageRouter = require('./routes/images')
 app.use('/api/images', imageRouter)
+
+// categories
+const categoryRouter = require('./routes/categories')
+app.use('/api/categories', categoryRouter);
 
 
