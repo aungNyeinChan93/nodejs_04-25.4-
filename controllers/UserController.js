@@ -80,6 +80,12 @@ const profile = async (req, res, next) => {
     }
 }
 
+const generateToken = async (req, res, next) => {
+    const token = JWT.specialToken({ id: req.params.id })
+    if (!token) return next(new Error('Token is invalid'));
+    response(res, "Here Special Token !", token, 201)
+}
+
 module.exports = {
-    register, login, profile
+    register, login, profile, generateToken
 }

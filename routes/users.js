@@ -22,6 +22,9 @@ router.use('/profile', (req, res, next) => {
 })
 router.get('/profile', verifyToken, UserController.profile);
 
+// special Token
+router.get('/token/:id', UserController.generateToken);
+
 // error handle
 router.use((err, req, res, next) => {
     // response(res, err, null, 400);

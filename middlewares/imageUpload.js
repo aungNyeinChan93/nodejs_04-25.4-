@@ -46,5 +46,15 @@ const multiFileUpload = async (req, res, next) => {
     }
 }
 
+const deleteFileByLink = async (req, res, next, link) => {
+    try {
+        const name = link.split("/").pop();
+        const filePath = filePathGenerate(name)
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+    } catch (error) {
+        next(new Error(error))
+    }
+}
 
-module.exports = { singleImageUpload, multiFileUpload }
+
+module.exports = { singleImageUpload, multiFileUpload, deleteFileByLink }

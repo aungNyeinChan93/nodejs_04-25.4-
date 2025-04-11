@@ -15,7 +15,7 @@ router.route('/')
 
 router.route('/:id')
     .get(CategoryController.show)
-    .patch(CategoryController.update)
+    .put(singleImageUpload, CategoryController.update)
     .delete(CategoryController.destroy)
 
 router.use((err, req, res, next) => {
