@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 
 const generateFileName = (name) => {
     let updateName = name.replace(/[^a-zA-Z0-9]/g, '')
@@ -46,7 +47,7 @@ const multiFileUpload = async (req, res, next) => {
     }
 }
 
-const deleteFileByLink = async (req, res, next, link) => {
+const deleteFileByLink = async (next, link) => {
     try {
         const name = link.split("/").pop();
         const filePath = filePathGenerate(name)

@@ -2,6 +2,7 @@ const { getUserCache } = require('../utils/cache')
 const Category = require('../models/category_model')
 const { response, Base } = require('../utils/base')
 const { deleteImage } = Base()
+const { deleteFileByLink } = require('../middlewares/imageUpload')
 
 const all = async (req, res, next) => {
     try {
@@ -51,7 +52,7 @@ const update = async (req, res, next) => {
             image: req.imageLink,
         }
         const category_db = await Category.findById(req.params.id);
-        if (!category_db) return next(new Error('Category is not foind!'))
+        if (!category_db) return next(new Error('Category is not found!'))
 
         // delete old image
         deleteImage(category_db.image)
@@ -66,7 +67,17 @@ const update = async (req, res, next) => {
     }
 };
 
-const destroy = async (req, res, next) => { };
+const destroy = async (req, res, next) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) return next(new Error('Category not found!'));
+        deleteFileByLink(next, category.image)
+        await Category.findByIdAndDelete(category._id);
+        response(res, 'Category Delete Successfully', {}, 200)
+    } catch (error) {
+        next(new Error(error.message))
+    }
+};
 
 module.exports = {
     all, show, create, update, destroy
