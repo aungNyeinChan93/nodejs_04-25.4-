@@ -1,4 +1,5 @@
 const { JWT } = require("../utils/base")
+const { ErrorFile } = require('../utils/base')
 
 /**
  * Middleware to verify the presence and validity of a JSON Web Token (JWT) in the request headers.
@@ -12,15 +13,20 @@ const { JWT } = require("../utils/base")
  */
 
 const verifyToken = (req, res, next) => {
-    const authToken = req.headers.authorization
-    if (!authToken) {
-        return next(new Error('Token is required!'))
+    try {
+        const authToken = req.headers.authorization
+        if (!authToken) {
+            return next(new Error('Token is required!'))
+        }
+        // console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
+        const token = authToken.split(" ")[1];
+        const decodedToken = JWT.verify(token, next);
+        if (decodedToken) req.userId = decodedToken.id
+        next();
+    } catch (error) {
+        ErrorFile.write(error)
     }
-    // console.log(`verfiyToken! => ${authToken.split(" ")[1]}`);
-    const token = authToken.split(" ")[1];
-    const decodedToken = JWT.verify(token, next);
-    if (decodedToken) req.userId = decodedToken.id
-    next();
+
 }
 
 module.exports = verifyToken;

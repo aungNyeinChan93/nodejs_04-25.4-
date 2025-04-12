@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
+
 const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URL);
 
@@ -16,6 +17,12 @@ app.use(express.static('public'))
 app.listen(process.env.PORT, () => {
     console.log(`DB => ${process.env.DB_URL}`);
     console.log(`App is running in port ${process.env.PORT}`);
+
+    // test
+    // const { ErrorFile } = require('./utils/base')
+    // const error_101 = ErrorFile.read('12-04-2025_anc_1744433685.txt')
+    // console.log(error_101);
+
 
 });
 

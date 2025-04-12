@@ -3,12 +3,14 @@ const Category = require('../models/category_model')
 const { response, Base } = require('../utils/base')
 const { deleteImage } = Base()
 const { deleteFileByLink } = require('../middlewares/imageUpload')
+const { ErrorFile } = require('../utils/base')
 
 const all = async (req, res, next) => {
     try {
         const categories = await Category.find();
         response(res, 'ALl categories', categories, 200)
     } catch (err) {
+        ErrorFile.write(err.message)
         next(new Error(err.message))
     }
 };
@@ -16,7 +18,6 @@ const all = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-
         const fields = {
             name: req.body.name,
             desc: req.body.desc,
@@ -31,7 +32,7 @@ const create = async (req, res, next) => {
 
         response(res, "Category create success", category, 201)
     } catch (error) {
-        next(new Error(error.message))
+        next(new Error(error))
     }
 };
 
@@ -41,7 +42,7 @@ const show = async (req, res, next) => {
         if (!category) return next(new Error('Category is not found!'));
         response(res, "Category has been found", category, 200)
     } catch (error) {
-        next(new Error(error.message))
+        next(new Error(error))
     }
 };
 const update = async (req, res, next) => {
@@ -70,12 +71,12 @@ const update = async (req, res, next) => {
 const destroy = async (req, res, next) => {
     try {
         const category = await Category.findById(req.params.id);
-        if (!category) return next(new Error('Category not found!'));
+        // if (!category) return next(new Error('Category not found!'));
         deleteFileByLink(next, category.image)
         await Category.findByIdAndDelete(category._id);
         response(res, 'Category Delete Successfully', {}, 200)
     } catch (error) {
-        next(new Error(error.message))
+        next(new Error(error))
     }
 };
 

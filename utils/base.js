@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const redis_client = require("./redis")
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment-timezone');
+const { timeStamp } = require('console');
 
 const response = (res, message = '', result = {}, status = 200) => {
     res.status(status).json({
@@ -51,8 +53,25 @@ const RDB = {
     clear: async (key) => await redis_client.flushall(key)
 }
 
+const MOMENT = {
+    now: () => moment.tz('Asia/Yangon').format('DD-MM-YYYY'),
+    timeStamp: () => moment.tz('Asia/Yangon').unix(),
+}
+
+const ErrorFile = {
+    write: (payload) => {
+        let fileName = MOMENT.now() + "_anc_" + MOMENT.timeStamp() + ".txt";
+        let filePath = path.join(__dirname, "../logger/errors/") + fileName;
+        fs.writeFileSync(filePath, JSON.stringify(payload), { encoding: "utf-8" });
+    },
+    read(payload) {
+        let filePath = path.join(__dirname, "../logger/errors/") + payload;
+        const data = fs.readFileSync(filePath, { encoding: 'utf-8' });
+        return JSON.parse(data);
+    }
+}
 
 
 module.exports = {
-    response, Base, Encoder, JWT, RDB
+    response, Base, Encoder, JWT, RDB, MOMENT, ErrorFile
 }
